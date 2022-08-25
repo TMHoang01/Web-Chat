@@ -4,7 +4,7 @@
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
@@ -23,7 +23,8 @@
                 <path d="M330.518 131.099l-213.825 130.08c-7.387 4.494-5.74 15.711 2.656 17.97l72.009 19.374a9.88 9.88 0 007.703-1.094l32.882-20.003-10.113 37.136a9.88 9.88 0 001.083 7.704l38.561 63.826c4.488 7.427 15.726 5.936 18.003-2.425l65.764-241.49c2.337-8.582-7.092-15.72-14.723-11.078zM266.44 356.177l-24.415-40.411 15.544-57.074c2.336-8.581-7.093-15.719-14.723-11.078l-50.536 30.744-45.592-12.266L319.616 160.91 266.44 356.177z" fill="#fff" /></svg>
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Search..." />
+<!--            <input type="text" placeholder="Search..." />-->
+            <?= $this->Form->input('search',['id'=> 'search']); ?>
         </div>
         <div class="user-settings">
             <div class=""><?= $this->Identity->get('name'); ?> </div>
@@ -252,5 +253,32 @@
 </div>
 <footer>
 </footer>
+<script>
+    $('document').ready(function (){
+        $('#search').keyup(function(){
+            var searchKey = $(this).val();
+            searchUsers(searchKey);
+        });
+
+        function searchUsers(keyword){
+            var data = keyword;
+            $.ajax({
+                method:'get',
+                url : "<?php echo $this->Url->build([
+                        'controller' => 'Users' , 'action' => 'Search'
+                    ]); ?>",
+                data: {keyword: data},
+                success: function(response) {
+                        $('.conversation-area').html(response);
+                },
+                fail:function (response){
+                        console.log('fail');
+                }
+            });
+        };
+    })
+</script>
+
+
 </body>
 </html>

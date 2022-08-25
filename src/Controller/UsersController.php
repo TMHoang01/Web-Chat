@@ -132,4 +132,20 @@ class UsersController extends AppController
         }
         $this->set(compact('user'));
     }
+
+    public function search(){
+        $this->request->allowMethod('ajax');
+
+        $keyword = $this->request->getQuery('keyword');
+//            debug($this->request->getQuery());
+
+        $query = $this->Users->find('all', [
+            'conditions'=>['name LiKE' => '%'.$keyword.'%'],
+            'order' => ['Users.id' => 'DESC'],
+            'limit'=> 10
+        ]);
+
+        $this->set('users',$query->all());
+//        $this->set('_serialize',['users']);
+    }
 }
