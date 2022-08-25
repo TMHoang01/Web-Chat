@@ -8,6 +8,7 @@
 <!--<hr>-->
 
 <?= $this->Form->create(); ?>
+<?= $this->Flash->render() ?>
 <?= $this->Form->input('email',['placeholder'=>"Email"]); ?>
 <?= $this->Form->input('password',['type'=>'password', 'placeholder'=>"Password"]); ?>
 <?= $this->Form->button('logIn', ['class'=>"login", 'type'=>'submit']);?>

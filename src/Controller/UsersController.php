@@ -11,6 +11,13 @@ namespace App\Controller;
  */
 class UsersController extends AppController
 {
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        // Configure the login action to not require authentication, preventing
+        // the infinite redirect loop issue
+        $this->Authentication->addUnauthenticatedActions(['login','register']);
+    }
 
     public function index()
     {
@@ -100,6 +107,16 @@ class UsersController extends AppController
         }
 
     }
+
+    public function logout(){
+        $result = $this->Authentication->getResult();
+        // regardless of POST or GET, redirect if user is logged in
+        if ($result && $result->isValid()) {
+            $this->Authentication->logout();
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+    }
+
     public function register(){
         $this->viewBuilder()->setLayout('login');
 

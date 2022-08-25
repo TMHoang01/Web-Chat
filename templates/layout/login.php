@@ -14,6 +14,7 @@
             <h1 class="logo">Facebook</h1>
             <p>Connect with friends and the world around you on Facebook.</p>
         </div>
+
         <?= $this->fetch('content'); ?>
     </div>
 </div>
