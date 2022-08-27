@@ -27,6 +27,10 @@
         </div>
         <div class="user-settings">
             <div class=""><?= $this->Identity->get('name'); ?> </div>
+            <div class="logout">
+                <a href="<?= $this->Url->build(['action' => 'logout']); ?>">Log out</a>
+
+            </div>
             <div class="dark-light">
                 <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
@@ -36,6 +40,7 @@
                     <circle cx="12" cy="12" r="3" />
                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" /></svg>
             </div>
+            
             <img class="user-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" class="account-profile" alt="">
         </div>
     </div>
@@ -46,7 +51,7 @@
             <div class="msg online">
                 <img class="msg-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
                 <div class="msg-detail">
-                    <div class="msg-username"><?=  $this->Html->link($user->name,['action'=> 'view', $user->id])   ?></div>
+                    <div class="msg-username"><?=  $this->Html->link($user->name,['action'=> 'to', $user->id])   ?></div>
                     <div class="msg-content">
                         <span class="msg-message">What time was our meet</span>
                         <span class="msg-date">20m</span>

@@ -40,6 +40,17 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+
+        $this->hasMany('MessagesTo', [
+            'className' => 'Chats',
+            'foreignKey' => 'user_id_to',
+            
+        ]);
+        $this->hasMany('MessagesFrom', [
+            'className' => 'Chats',
+            'foreignKey' => 'user_id_from',
+            
+        ]);
     }
 
     /**
