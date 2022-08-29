@@ -384,6 +384,28 @@ html {
     max-width: 300px;
     width: 100%;
 }
+.chat-msg-setting {
+    display: flex;
+    align-items: center;
+    display: none;
+}
+.chat-msg-setting svg  {
+    margin-right: 12px;
+    color: var(--settings-icon-color);
+    width: 20px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+.chat-msg-setting svg:hover  {
+    /*cursor: pointer;*/
+    color: var(--settings-icon-hover);
+
+}
+.chat-msg:hover > .chat-msg-setting {
+    display: flex;
+}
+
+
 .chat-area-footer {
     display: flex;
     border-top: 1px solid var(--border-color);

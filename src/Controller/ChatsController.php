@@ -87,6 +87,19 @@ class ChatsController extends AppController
     public function to($user_to = null)
     {
 
+        $chat = $this->Chats->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $chat = $this->Chats->patchEntity($chat, $this->request->getData());
+//            debug($chat);
+//            exit();
+            if ($this->Chats->save($chat)) {
+                $this->Flash->success(__('The chat has been saved.'));
+                return $this->redirect(['action' => 'to', $user_to]);
+            }
+            $this->Flash->error(__('The chat could not be saved. Please, try again.'));
+        }
+
+        $this->set(compact('chat'));
         $this->loadModel('Users');
         $users = $this->Users->find();
         $to = $this->Users->get($user_to, [
@@ -95,7 +108,6 @@ class ChatsController extends AppController
 
         $this->set(compact(['to','users']));
 
-//        $user_to = 2;
         $user_from =$this->Authentication->getResult()->getData()->id;
 
         $this->viewBuilder()->setLayout('chat1');
@@ -128,6 +140,43 @@ class ChatsController extends AppController
         }
         $this->set(compact('chat'));
 
+    }
+    public function sendMessage(){
+        $this->request->allowMethod('ajax');
+
+
+
+
+        $chat = $this->Chats->newEmptyEntity();
+        if ($this->request->is('ajax')) {
+            $chat = $this->Chats->patchEntity($chat, $this->request->getData());
+
+            if ($this->Chats->save($chat)) {
+//                $this->Flash->success(__('The chat has been saved.'));
+
+                $this->set('newMsg',$chat);
+                return;
+            }
+            $this->Flash->error(__('The chat could not be saved. Please, try again.'));
+
+        }
+    }
+
+    public function editMessage(){
+        $this->request->allowMethod('ajax');
+
+        if ($this->request->is(['ajax'])) {
+            $para = $this->request->getData();
+            $chat = $this->Chats->get($para->id);
+            $chat->message = $para->message;
+            if ($this->Chats->save($chat)) {
+                $this->Flash->success(__('The chat has been saved.'));
+
+            }else{
+                $this->Flash->error(__('The chat could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('chat'));
     }
 
 }

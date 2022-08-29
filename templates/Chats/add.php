@@ -19,8 +19,8 @@
             <fieldset>
                 <legend><?= __('Add Chat') ?></legend>
                 <?php
-                    echo $this->Form->control('user_id_from', ['options' => $userFrom]);
-                    echo $this->Form->control('user_id_to', ['options' => $userTo]);
+                    echo $this->Form->control('user_id_from', ['value'=> $this->Identity->get('id')]);
+                    echo $this->Form->control('user_id_to');
                     echo $this->Form->control('message');
                     echo $this->Form->control('image_file_name');
                 ?>
