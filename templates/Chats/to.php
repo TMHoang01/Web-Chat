@@ -190,37 +190,58 @@
 
         // edit message
         $('.chat-msg-setting>svg.feather-pencil').click(function (){
-            alert('edit');
+            // alert('edit');
             // let formedit = '<input type="text" value="'+$(this).parent().parent().find('.chat-msg-text').text()+'">';
+
+            var msgEdit = $(this).parent().parent();
+            console.log(msgEdit);
+            var msgEditId = msgEdit.data('id');
+            console.log("id message edit ", msgEditId);
+            var textContent = msgEdit.find('.chat-msg-text');
+            var textContentValue = textContent.text();
+
             let formedit =
             '<div class="post-revision-edit-content edit-post-content js-post-revision-edit-content">'
-            +    '<textarea placeholder="Write a post..." autocomplete="off"></textarea>'
+            +    '<textarea placeholder="Write a post..." autocomplete="off">'+ textContentValue + '</textarea>'
             +    '<a class="file-upload-link js-file-upload-link" href="#">'
             +        '<i class="icon-paper-clip js-file-upload-icon" original-title="attach notes, past exams, or other materials"></i>'
             +    '</a>'
             +    '<div class="edit-post-content-controls">'
-            +        '<label>'
-            +            '<input class="js-anonymous" type="checkbox" name="anonymous">'
-            +            'anonymous'
-            +        '</label>'
-            +        '<button class="button-success button-mini js-edit">'
-            +            'save'
-            +        '</button>'
-            +        '<a class="js-cancel" href="#" non-pjax="">'
-            +            'cancel'
+            +        '<a class="js-cancel" id="save-edit-msg" href="#2" non-pjax="">'
+            +            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">'
+            +               '<path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>'
+            +            '</svg>'
+            +        '</a>'
+            +        '<a class="js-cancel" id="cancel-edit-msg" href="#1" >'
+            +            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">'
+            +               '<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>'
+            +            '</svg>'
             +        '</a>'
             +        '<div class="clearfix"></div>'
             +    '</div>'
             +    '<input class="js-upload-file-input" type="file" name="file" multiple="">';
-            var msgEdit = $(this).parent().parent();
-            var msgEditId = msgEdit.data('id');
-            console.log("id message edit ", msgEditId);
-            var textContent = msgEdit.find('.chat-msg-text');
-            // replace textContent by formedit
+
             textContent.replaceWith(formedit);
-            
+
+            $('.chat-msg-setting').each(function (){
+                $(this).hide();
+            });
+
+
+            // cancel edit message
+            $("a#cancel-edit-msg").on("click",function(){
+                console.log("cancel edit message", msgEditId, textContentValue);  
+                textContent.text(textContentValue);
+                $('.chat-msg-setting').each(function (){
+                    $(this).show();
+                });
+            });
 
         });
+
+        
+
+
         // save message
         $('.chat-msg-setting>svg.feather-save').click(function (){
             var msgId = $(this).attr('msg-id');
@@ -234,8 +255,6 @@
             msgText.text(msgEditText.val());
             msgEditText.val('');
         });
-
-
 
         function editMessage(id, message){
             $.ajax({
@@ -255,6 +274,47 @@
                 },
                 fail:function(response){
 
+                }
+            });
+        };
+
+
+        // delete message
+        $('.chat-msg-setting>svg.feather-trash').click(function (){
+            let msgDeleteId = $(this).parent().data('id');
+            console.log("chosoe " + msgDeleteId);
+            //conform delete
+            var conf = confirm('Are you sure to delete this message '+msgDeleteId + '?', 'Delete');
+            if(conf){
+                deleteMessage(msgDeleteId);
+            }
+
+
+        });
+
+        function deleteMessage(id){
+            $.ajax({
+                method:'get',
+                headers:{
+                    'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                },
+                url : "<?php echo $this->Url->build([
+                    'controller' => 'Chats' , 'action' => 'deleteMessage'
+                ]); ?>",
+                data: {
+                    message_id: id
+                },
+                success: function(response) {
+                    console.log(response);
+                    // $('#'+msgDelete).remove();
+                    if(response){
+                        $("div.chat-msg[data-id='"+id+"']").remove();
+                    }else{
+                    }
+
+                },
+                fail:function (response){
+                    console.log('fail');
                 }
             });
         };

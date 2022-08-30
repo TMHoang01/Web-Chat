@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Ratchet\MessageComponentInterface;
+use Ratchet\ConnectionInterface;
 /**
  * Chats Controller
  *
@@ -10,7 +12,50 @@ namespace App\Controller;
  * @method \App\Model\Entity\Chat[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class ChatsController extends AppController
+    implements MessageComponentInterface
 {
+    protected $clients;
+
+
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->clients = new \SplObjectStorage;
+    }
+    public function onOpen(ConnectionInterface $conn) {
+        // Store the new connection to send messages to later
+        $this->clients->attach($conn);
+
+        echo "New connection! ({$conn->resourceId})\n";
+    }
+
+    public function onMessage(ConnectionInterface $from, $msg) {
+        $numRecv = count($this->clients) - 1;
+        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
+            , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+
+        foreach ($this->clients as $client) {
+            if ($from !== $client) {
+                // The sender is not the receiver, send to each client connected
+                $client->send($msg);
+            }
+        }
+    }
+
+    public function onClose(ConnectionInterface $conn) {
+        // The connection is closed, remove it, as we can no longer send it messages
+        $this->clients->detach($conn);
+
+        echo "Connection {$conn->resourceId} has disconnected\n";
+    }
+
+    public function onError(ConnectionInterface $conn, \Exception $e) {
+        echo "An error has occurred: {$e->getMessage()}\n";
+
+        $conn->close();
+    }
+
+
 
     public function index()
     {
@@ -141,10 +186,9 @@ class ChatsController extends AppController
         $this->set(compact('chat'));
 
     }
+
     public function sendMessage(){
         $this->request->allowMethod('ajax');
-
-
 
 
         $chat = $this->Chats->newEmptyEntity();
@@ -178,5 +222,34 @@ class ChatsController extends AppController
         }
         $this->set(compact('chat'));
     }
+
+    public function deleteMessage()
+    {
+        $this->request->allowMethod(['ajax', 'delete', 'post', 'get']);
+        if ($this->request->is(['ajax'])) {
+//            debug($this->request->getQuery('message_id'));
+//            exit;
+            $id = $this->request->getQuery('message_id');
+            $chat = $this->Chats->get($id);
+            if(!$id){
+                echo "not ".$id,' is vaild';
+            }else
+            if ($this->Chats->delete($chat)) {
+                $this->Flash->success(__('The chat has been deleted.'));
+                echo "1";
+
+            } else {
+                $this->Flash->error(__('The chat could not be deleted. Please, try again.'));
+                echo "delete not comple";
+            }
+
+        }else{
+            echo 'not method ajax';
+        }
+        exit();
+
+//        return $this->redirect(['action' => 'index']);
+    }
+
 
 }

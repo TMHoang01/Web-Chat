@@ -1,0 +1,49 @@
+.edit-post-content {
+    position: relative;
+}
+textarea {
+    border: 1px solid #eeeeee;
+    color: #444444;
+    padding: 10px;
+    margin: 0;
+    resize: none;
+}
+ .edit-post-content textarea, .edit-comment-content textarea {
+    width: 100%;
+    font-size: 1.5rem;
+    padding: 10px 35px 10px 10px;
+}
+.edit-post-content .file-upload-link {
+    position: absolute;
+    color: #3e90ca;
+}
+
+
+.edit-post-content .edit-post-content-controls{
+    margin-top: 5px;
+}
+
+ .edit-post-content input[type="file"] {
+    display: none;
+}
+
+.edit-post-content .edit-post-content-controls label {
+    float: left;
+    line-height: 26px;
+    margin: 2px 10px 0 0;
+}
+
+.edit-post-content .edit-post-content-controls button{
+    float: right;
+    margin-left: 15px;
+    padding: 5px;
+    border-color: #4787ed;
+    color: #fefefe;
+    background-image: -webkit-linear-gradient(top, #4d90fe, #4787ed);
+}
+
+.edit-post-content .edit-post-content-controls > .js-cancel{
+    float: right;
+    margin-left: 15px;
+    color: #3e90ca;
+}

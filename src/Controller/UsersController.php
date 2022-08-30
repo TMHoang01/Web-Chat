@@ -99,7 +99,7 @@ class UsersController extends AppController
         // regardless of POST or GET, redirect if user is logged in
         if ($result && $result->isValid()) {
 
-            return $this->redirect(['action' => 'index']);
+            return $this->redirect(['controller'=>'Chats','action' => 'index']);
         }
         // display error if user submitted and authentication failed
         if ($this->request->is('post') && !$result->isValid()) {
