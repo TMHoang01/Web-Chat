@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 /**
@@ -251,5 +254,24 @@ class ChatsController extends AppController
 //        return $this->redirect(['action' => 'index']);
     }
 
+    public function loadStamps(){
+        $dir = new Folder(WWW_ROOT . 'img'.DS.'stamps');
+        $stamps = $dir->find('.*\.png', true);
+        $this->set(compact('stamps'));
+    }
+
+    public function sendImage(){
+        $this->request->allowMethod(['ajax', 'post']);
+        $chat = $this->Chats->newEmptyEntity();
+        if ($this->request->is('ajax')) {
+            $chat = $this->Chats->patchEntity($chat, $this->request->getData());
+            // $chat->image_file_name = $this->request->getQuery('url_image');
+            // debug($chat->image_file_name);
+            // exit();
+            if ($this->Chats->save($chat)) {
+                $this->set('newMsg',$chat);
+            }
+        }
+    }
 
 }

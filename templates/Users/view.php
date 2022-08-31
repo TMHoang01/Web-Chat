@@ -17,7 +17,8 @@
             <div class="chat-msg-content">
                 <div class="chat-msg-text">Luctus et ultrices posuere cubilia curae.</div>
                 <div class="chat-msg-text">
-                    <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" /></div>
+                    <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
+                </div>
                 <div class="chat-msg-text">Neque gravida in fermentum et sollicitudin ac orci phasellus egestas. Pretium lectus quam id leo.</div>
             </div>
         </div>

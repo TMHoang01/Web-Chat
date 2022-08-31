@@ -20,11 +20,12 @@
                 <div class="chat-msg-date"><?= $chat->created ?></div>
             </div>
             <div class="chat-msg-content">
-<!--                <div class="chat-msg-text">Luctus et ultrices posuere cubilia curae.</div>-->
-<!--                <div class="chat-msg-text">-->
-<!--                    <img src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />-->
-<!--                </div>-->
+                <?php if($chat->message): ?>
                 <div class="chat-msg-text"><?= $chat->message ?></div>
+                <?php endif;?>
+                <?php if($chat->image_file_name): ?>
+                    <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
+                <?php endif;?>
             </div>
         </div>
         <?php else : ?>
@@ -34,7 +35,12 @@
                 <div class="chat-msg-date"><?= $chat->created ?></div>
             </div>
             <div class="chat-msg-content">
+                <?php if($chat->message): ?>
                 <div class="chat-msg-text"><?= $chat->message ?></div>
+                <?php endif;?>
+                <?php if($chat->image_file_name): ?>
+                    <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
+                <?php endif;?>
 <!--                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>-->
             </div>
             <div class="chat-msg-setting" data-id=<?= $chat->id ?>>
@@ -53,6 +59,7 @@
         </div>
         <?php endif; ?>
         <?php endforeach; ?>
+
 
 <!--        <div class="chat-msg">-->
 <!--            <div class="chat-msg-profile">-->
@@ -112,8 +119,21 @@
 <!--        </div>-->
 
     </div>
+
     <?= $this->Flash->render();?>
     <div class="chat-area-footer">
+        <div class="wrapper-images" >
+            <div class="section">
+                <h2>
+                    Stamps Images
+                </h2>
+                <div class="images-list">
+                    <?= $this->Html->image('stamps/01.png'); ?>
+                    <?= $this->Html->image('stamps/02.png'); ?>
+
+                </div>
+            </div>
+        </div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
             <path d="M23 7l-7 5 7 5V7z" />
             <rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
@@ -123,7 +143,8 @@
             <path d="M21 15l-5-5L5 21" /></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
             <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v8M8 12h8" /></svg>
+            <path d="M12 8v8M8 12h8" />
+        </svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" /></svg>
 <!--        --><?//= $this->Form->create($chat,['type' => 'file']); ?>
@@ -132,16 +153,20 @@
 <!--        --><?//= $this->Form->hidden('user_id_to', $to->id); ?>
         <?= $this->Form->input('message',['placeholder'=>"Type something here...",'id'=> 'txtSend']); ?>
 <!--        <input type="text" placeholder="Type something here..." />-->
-        <?= $this->Form->button('Submit',['id'=> 'btnSend']); ?>
+<!--        --><?//= $this->Form->button('Submit',['id'=> 'btnSend']); ?>
 <!--        --><?//= $this->Form->end(); ?>
 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile">
             <circle cx="12" cy="12" r="10" />
             <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" />
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up">
+        <svg display="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up">
             <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" />
         </svg>
+        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="feather feather-send" viewBox="0 0 16 16">
+            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+        </svg>
+
     </div>
 </div>
 <?= $this->Html->css('formEditMsg'); ?>
@@ -150,18 +175,23 @@
 
 
         $('#txtSend').keypress(function (e){
+            // check empty
+            // console.log($('#txtSend').val().length);
             if(e.which == 13) {
                 var searchKey = $(this).val();
-
+                // check empty
+                if(searchKey.length > 0){
                 console.log("send message by enter",<?=$user_from ?>, <?= $to->id ?> ,searchKey);
-
                 sendMessage( <?=$user_from ?>, <?= $to->id ?> ,searchKey);
+                }
             }
         });
 
-        $('#btnSend').click(function (){
+        $('.chat-area-footer>svg.feather-send').click(function (){
             var searchKey = $('#txtSend').val();
-            sendMessage( <?=$user_from ?>, <?= $to->id ?>, searchKey);
+            if(searchKey.length > 0){
+                sendMessage( <?=$user_from ?>, <?= $to->id ?>, searchKey);
+            }
         });
 
         function sendMessage(userFrom, userTo, message){
@@ -187,6 +217,72 @@
                 }
             });
         };
+
+        //load stamps
+        var checkLoadStamps = false;
+        $('.chat-area-footer>svg.feather-plus-circle').click(function (){
+            if(checkLoadStamps == false){
+                $.ajax({
+                    method:'get',
+                    data:'',
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url : "<?php echo $this->Url->build([
+                        'controller' => 'Chats' , 'action' => 'loadStamps'
+                    ]); ?>",
+                    success: function(response) {
+                        $(".wrapper-images .images-list").html(response);
+
+                        // send stamps
+                        $('.wrapper-images .images-list img').click(function (){
+                            console.log("send stamps");
+                            var stamp = $(this).attr('src');
+                            // remove /webchat/webroot/img/stamps/ from src
+                            stamp = stamp.replace('/webchat','');
+                            sendImage(<?=$user_from ?>, <?= $to->id ?>, stamp);
+                        });
+
+                    },
+                    fail:function (response){
+                        console.log('fail');
+                    }
+                });
+                checkLoadStamps = true;
+            }
+            $(".wrapper-images").toggle();
+        });
+        // send image
+        function sendImage(userFrom, userTo, stamp){
+            $.ajax({
+                method: 'post',
+                headers:{
+                    'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                },
+                url : "<?php echo $this->Url->build([
+                    'controller' => 'Chats' , 'action' => 'sendImage'
+                ]); ?>",
+                data: {
+                    user_id_from: userFrom,
+                    user_id_to: userTo,
+                    image_file_name: stamp
+                },
+                success: function (response){
+                    console.log('success send tamp');
+                    $('.chat-area-main').append(response);
+                },
+                fail : function(){
+                    console.log('fail send tamp');
+                }
+            });
+        };
+
+
+
+
+        $('.chat-msg-setting>svg.feather-plus-circle').click(function (){
+
+        });
 
         // edit message
         $('.chat-msg-setting>svg.feather-pencil').click(function (){
@@ -230,7 +326,7 @@
 
             // cancel edit message
             $("a#cancel-edit-msg").on("click",function(){
-                console.log("cancel edit message", msgEditId, textContentValue);  
+                console.log("cancel edit message", msgEditId, textContentValue);
                 textContent.text(textContentValue);
                 $('.chat-msg-setting').each(function (){
                     $(this).show();
@@ -238,8 +334,6 @@
             });
 
         });
-
-        
 
 
         // save message
@@ -318,6 +412,7 @@
                 }
             });
         };
+
 
 
     });
