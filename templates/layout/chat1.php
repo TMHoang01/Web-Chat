@@ -4,9 +4,9 @@
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken')); ?>
 
-
-
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
     <?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?>
     <?= $this->Html->css('chat1.scss'); ?>
@@ -254,5 +254,6 @@
 </div>
 <footer>
 </footer>
+
 </body>
 </html>

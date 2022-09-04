@@ -44,6 +44,17 @@ class ChatsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('UserFrom', [
+            'className' => 'Users',
+            'foreignKey' => 'user_id_from',
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('UserTo', [
+            'className' => 'Users',
+            'foreignKey' => 'user_id_from',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

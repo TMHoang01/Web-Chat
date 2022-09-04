@@ -92,7 +92,7 @@ class UsersController extends AppController
         // regardless of POST or GET, redirect if user is logged in
         if ($result && $result->isValid()) {
 
-            return $this->redirect(['action' => 'index']);
+            return $this->redirect(['controller'=>'Chats' ,'action' => 'index']);
         }
         // display error if user submitted and authentication failed
         if ($this->request->is('post') && !$result->isValid()) {
@@ -100,6 +100,7 @@ class UsersController extends AppController
         }
         $this->Flash->error('Login failed');
     }
+ 
     public function logout(){
         $result = $this->Authentication->getResult();
         // regardless of POST or GET, redirect if user is logged in
@@ -108,6 +109,7 @@ class UsersController extends AppController
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
         }
     }
+
     public function register(){
         $this->viewBuilder()->setLayout('login');
 

@@ -1,6 +1,6 @@
 <div class="chat-area">
     <div class="chat-area-header">
-        <div class="chat-area-title"><?= "to->name"; ?></div>
+        <div class="chat-area-title"><?= $to->name; ?></div>
         <div class="chat-area-group">
             <img class="chat-area-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
 <!--            <img class="chat-area-profile" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%282%29.png" alt="">-->
@@ -15,7 +15,7 @@
             <?php if($chat->user_id_from == $user_from): ?>
             <div class="chat-msg owner">
                 <div class="chat-msg-profile">
-                    <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" />
+                    <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt=<?= $chat->user_from->name; ?>  title=<?= $chat->user_from->name; ?>/>
                     <div class="chat-msg-date"><?= $chat->created ?></div>
                 </div>
                 <div class="chat-msg-content">
@@ -26,7 +26,7 @@
             <?php else: ?>
             <div class="chat-msg">
                 <div class="chat-msg-profile">
-                    <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png"  />
+                    <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png"  alt="<?= $chat->user_from->name; ?>"  title=<?= $chat->user_from->name; ?>/>
                     <div class="chat-msg-date"><?= $chat->created ?></div>
                 </div>
                 <div class="chat-msg-content">
@@ -40,7 +40,72 @@
         
         <?php endforeach; ?>
         
-    
+        <!-- <div class="chat-msg owner">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+                <div class="chat-msg-date">Message seen 1.22pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Sit amet risus nullam eget felis eget. Dolor sed viverra ipsum😂😂😂</div>
+                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>
+            </div>
+        </div>
+        <div class="chat-msg">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%282%29.png" alt="">
+                <div class="chat-msg-date">Message seen 2.45pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Aenean tristique maximus tortor non tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae😊</div>
+                <div class="chat-msg-text">Ut faucibus pulvinar elementum integer enim neque volutpat.</div>
+            </div>
+        </div>
+        <div class="chat-msg owner">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+                <div class="chat-msg-date">Message seen 2.50pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">posuere eget augue sodales, aliquet posuere eros.</div>
+                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>
+            </div>
+        </div>
+        <div class="chat-msg">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png" alt="" />
+                <div class="chat-msg-date">Message seen 3.16pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Egestas tellus rutrum tellus pellentesque</div>
+            </div>
+        </div>
+        <div class="chat-msg">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" class="account-profile" alt="">
+                <div class="chat-msg-date">Message seen 3.16pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et.</div>
+            </div>
+        </div>
+        <div class="chat-msg owner">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+                <div class="chat-msg-date">Message seen 2.50pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Tincidunt arcu non sodales😂</div>
+            </div>
+        </div>
+        <div class="chat-msg">
+            <div class="chat-msg-profile">
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%282%29.png" alt="">
+                <div class="chat-msg-date">Message seen 3.16pm</div>
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">Consectetur adipiscing elit pellentesque habitant morbi tristique senectus et🥰</div>
+            </div>
+        </div> -->
     </div>
     <div class="chat-area-footer">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
@@ -71,7 +136,7 @@
         var conn = new WebSocket('ws://localhost:8090');
         conn.onopen = function(e) {
             console.log("Connection established!");
-        }
+        };
 
         conn.onmessage = function(e) {
             console.log(e.data);
