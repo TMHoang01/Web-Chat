@@ -147,14 +147,9 @@
         </svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" /></svg>
-<!--        --><?//= $this->Form->create($chat,['type' => 'file']); ?>
-        <?= $this->Form->hidden('user_id_from', ['value'=> $user_from]); ?>
-        <?= $this->Form->hidden('user_id_to', ['value'=> $to->id]); ?>
-<!--        --><?//= $this->Form->hidden('user_id_to', $to->id); ?>
+
         <?= $this->Form->input('message',['placeholder'=>"Type something here...",'id'=> 'txtSend']); ?>
-<!--        <input type="text" placeholder="Type something here..." />-->
-<!--        --><?//= $this->Form->button('Submit',['id'=> 'btnSend']); ?>
-<!--        --><?//= $this->Form->end(); ?>
+
 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile">
             <circle cx="12" cy="12" r="10" />
@@ -172,8 +167,131 @@
 <?= $this->Html->css('formEditMsg'); ?>
 <script>
     $(document).ready(function (){
+        
+		var conn = new WebSocket('ws://localhost:8080?user_id=<?= $this->request->getAttribute('identity')->id; ?>');
+        var user_id = <?= $this->request->getAttribute('identity')->id; ?>;
+        var resource_id;
+		conn.onopen = function(e) {
+            console.log("Connection established!");
+        
+		};
+        conn.onmessage = function(e) {
+            // console.log(e.data);
+            var data = JSON.parse(e.data);
+            if(data.socket == 'open'){
+                console.log(data);
+                // insert data table status
+                $.ajax({
+                
+                    type: "POST",
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'add']); ?>",
+
+                    data: data,
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        resource_id = response.resource_id;
+                        console.log(resource_id);
+
+                    }
+
+                });
+
+            }else if(data.socket == 'close'){
+                console.log(data);
+                // insert data table status
+                $.ajax({
+                
+                    type: "POST",
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
+
+                    data: data,
+                    success: function (response) {
+                        console.log("Close status sockets :" + response);
+                    }
+
+                });
+
+            }else if(data.socket == 'send'){
+                console.log(data);
+                // insert data table status
 
 
+            }else{
+                console.log("not method socket");
+            }
+        };
+
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            console.log("close socket");
+            
+            $.ajax({             
+                    type: "POST",
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
+                    data: {
+                        'user_id': user_id,
+                        'resource_id': resource_id,  
+                    },
+                    success: function (response) {
+                        console.log("Close status sockets :" + response);
+                    }      
+            });
+
+        });
+
+        conn.onclose = function(event)
+		{
+			console.log('connection close');
+            $.ajax({             
+                    type: "POST",
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
+                    data: {
+                        'user_id': user_id,
+                        'resource_id': resource_id,  
+                    },
+                    success: function (response) {
+                        console.log("Close status sockets :" + response);
+                    }      
+            });
+		};
+
+
+
+        $('button.add').click(function (e) { 
+            e.preventDefault();
+            var message = $('#txtSend').val();
+            var user_id = <?= $this->request->getAttribute('identity')->id; ?>;
+            var data = {
+                'message' : message,
+                'user_id' : user_id
+            };
+            conn.send(JSON.stringify(data));
+            $('#txtSend').val('');
+        });
+
+        
+        conn.onclose = function(event)
+		{
+			console.log('connection close');
+		};
+
+
+
+
+
+        $('.chat-area').scrollTop($('.chat-area')[0].scrollHeight);
         $('#txtSend').keypress(function (e){
             // check empty
             // console.log($('#txtSend').val().length);
@@ -182,7 +300,7 @@
                 // check empty
                 if(searchKey.length > 0){
                 console.log("send message by enter",<?=$user_from ?>, <?= $to->id ?> ,searchKey);
-                sendMessage( <?=$user_from ?>, <?= $to->id ?> ,searchKey);
+                sendMessage1( <?=$user_from ?>, <?= $to->id ?> ,searchKey);
                 }
             }
         });
@@ -190,11 +308,28 @@
         $('.chat-area-footer>svg.feather-send').click(function (){
             var searchKey = $('#txtSend').val();
             if(searchKey.length > 0){
-                sendMessage( <?=$user_from ?>, <?= $to->id ?>, searchKey);
+                sendMessage1( <?=$user_from ?>, <?= $to->id ?>, searchKey);
             }
         });
 
+        function sendMessage1(userFrom, userTo, message){
+            var data = {
+                    resource_id : resource_id,
+					user_id_from: userFrom,
+					user_id_to:userTo,
+					message: message,
+				};
+                conn.send(JSON.stringify(data));
+        }
+
         function sendMessage(userFrom, userTo, message){
+            var data = {
+					userId: userFrom,
+					msg: message,
+					receiver_userid:userTo,
+				};
+
+			conn.send(JSON.stringify(data));
             $.ajax({
                 method:'post',
                 headers:{
@@ -211,6 +346,8 @@
                 success: function(response) {
                     $('input#txtSend').val('');
                     $('.chat-area-main').append(response);
+                    $('.chat-area').scrollTop($('.chat-area')[0].scrollHeight);
+                    $('.chat-area-main').scrollTop($('.chat-area-main')[0].scrollHeight);
                 },
                 fail:function (response){
                     console.log('fail');

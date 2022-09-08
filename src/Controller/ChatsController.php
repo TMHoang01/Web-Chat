@@ -24,18 +24,48 @@ class ChatsController extends AppController
     {
         parent::initialize();
         $this->clients = new \SplObjectStorage;
+        // echo "ChatsController initialized";
+    }
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $this->Authentication->allowUnauthenticated(['index']);
     }
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
+        // get user id from connection
+        $querystring = $conn->httpRequest->getUri()->getQuery();
 
-        echo "New connection! ({$conn->resourceId})\n";
+        parse_str($querystring, $queryarray);
+        if(isset($queryarray['user_id'])) {
+            $user_id = $queryarray['user_id'];
+            
+            echo "New connection! ({$conn->resourceId})\n";
+
+            $data = array(
+                'user_id' => $user_id,
+                'resource_id' => $conn->resourceId,
+                'socket' => 'open'
+            );
+            
+            $conn->send(json_encode($data));
+
+        }else{
+            echo "No user_id in querystring in new connection! ({$conn->resourceId})\n";
+        }
+
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+        $data = json_decode($msg);
+
+        $statusController = new StatusController();
+        echo json_encode($statusController->view());
+
 
         foreach ($this->clients as $client) {
             if ($from !== $client) {
@@ -46,10 +76,10 @@ class ChatsController extends AppController
     }
 
     public function onClose(ConnectionInterface $conn) {
+        echo "Connection {$conn->resourceId}  has disconnected\n";
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        echo "Connection {$conn->resourceId} has disconnected\n";
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
@@ -62,12 +92,25 @@ class ChatsController extends AppController
 
     public function index()
     {
+
+        // debug($this->request->getQuery('user_id'));
+        // exit();
+
+        $this->loadModel('Users');
+        $users = $this->Users->find();
+        $this->set(compact(['users']));
+
+        
         $chats = $this->Chats->find('all',[
             'contain' =>[
                 'UserFrom',
                 'UserTo'
             ]
             ]);
+        
+
+        $this->viewBuilder()->setLayout('chat1');
+
         $chats = $this->paginate($this->Chats);
 //    debug($chats->all());
 //    exit;
