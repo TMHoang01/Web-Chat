@@ -12,51 +12,66 @@
     <div class="chat-area-main">
         <?php foreach ($chats as $chat): ?>
         <?php
-            if($chat->user_id_to == $user_from ):
+            if($chat->user_id_from == $user_from ):
         ?>
-        <div class="chat-msg">
-            <div class="chat-msg-profile">
-                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
-                <div class="chat-msg-date"><?= $chat->created ?></div>
-            </div>
-            <div class="chat-msg-content">
-                <?php if($chat->message): ?>
-                <div class="chat-msg-text"><?= $chat->message ?></div>
-                <?php endif;?>
-                <?php if($chat->image_file_name): ?>
-                    <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
-                <?php endif;?>
-            </div>
-        </div>
+                <div class="chat-msg owner" data-id=<?= $chat->id ?> >
+                    <div class="chat-msg-profile">
+                        <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+                        <?php
+                        // check modified
+                        if($chat->modified == $chat->created){
+                            echo '<div class="chat-msg-date">Sent: '.$chat->created .'</div>';
+                        }else{
+                            echo '<div class="chat-msg-date">Edit: '.$chat->modified .'</div>';
+                        }
+                        ?>
+                    </div>
+                    <div class="chat-msg-content">
+                        <?php if($chat->message): ?>
+                            <div class="chat-msg-text"><?= $chat->message ?></div>
+                        <?php endif;?>
+                        <?php if($chat->image_file_name): ?>
+                            <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
+                        <?php endif;?>
+                        <!--                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>-->
+                    </div>
+                    <div class="chat-msg-setting" data-id=<?= $chat->id ?>>
+                        <!--                <div class="chat-msg-edit">-->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="feather feather-pencil" viewBox="0 0 16 16">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                        </svg>
+                        <!--                </div>-->
+                        <!--                <div class="chat-msg-delete">-->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="feather feather-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                        <!--                </div>-->
+                    </div>
+                </div>
         <?php else : ?>
-        <div class="chat-msg owner" data-id=<?= $chat->id ?> >
-            <div class="chat-msg-profile">
-                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
-                <div class="chat-msg-date"><?= $chat->created ?></div>
-            </div>
-            <div class="chat-msg-content">
-                <?php if($chat->message): ?>
-                <div class="chat-msg-text"><?= $chat->message ?></div>
-                <?php endif;?>
-                <?php if($chat->image_file_name): ?>
-                    <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
-                <?php endif;?>
-<!--                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>-->
-            </div>
-            <div class="chat-msg-setting" data-id=<?= $chat->id ?>>
-<!--                <div class="chat-msg-edit">-->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="feather feather-pencil" viewBox="0 0 16 16">
-                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                    </svg>
-<!--                </div>-->
-<!--                <div class="chat-msg-delete">-->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="feather feather-trash" viewBox="0 0 16 16">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                    </svg>
-<!--                </div>-->
-            </div>
-        </div>
+
+                <div class="chat-msg">
+                    <div class="chat-msg-profile">
+                        <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
+                        <?php
+                            // check modified
+                            if($chat->modified == $chat->created){
+                                echo '<div class="chat-msg-date">Sent: '.$chat->created .'</div>';
+                            }else{
+                                echo '<div class="chat-msg-date">Edit: '.$chat->modified .'</div>';
+                        }
+                        ?>
+                    </div>
+                    <div class="chat-msg-content">
+                        <?php if($chat->message): ?>
+                            <div class="chat-msg-text"><?= $chat->message ?></div>
+                        <?php endif;?>
+                        <?php if($chat->image_file_name): ?>
+                            <div class="chat-msg-text"><?= $this->Html->image($chat->image_file_name); ?></div>
+                        <?php endif;?>
+                    </div>
+                </div>
         <?php endif; ?>
         <?php endforeach; ?>
 
@@ -71,16 +86,17 @@
 <!--                <div class="chat-msg-text">Ut faucibus pulvinar elementum integer enim neque volutpat.</div>-->
 <!--            </div>-->
 <!--        </div>-->
-<!--        <div class="chat-msg owner">-->
-<!--            <div class="chat-msg-profile">-->
-<!--                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />-->
-<!--                <div class="chat-msg-date">Message seen 2.50pm</div>-->
-<!--            </div>-->
-<!--            <div class="chat-msg-content">-->
-<!--                <div class="chat-msg-text">posuere eget augue sodales, aliquet posuere eros.</div>-->
-<!--                <div class="chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="chat-msg owner">
+            <div class="chat-msg-profile">
+                <div class="chat-msg-date">Message seen 2.50pm</div>
+                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+            </div>
+            <div class="chat-msg-content">
+                <div class="chat-msg-text">posuere eget augue sodales, aliquet posuere eros.</div>
+                <div class="chat-msg-text"><img class="chat-msg-img" id="img-test" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
+                </div>
+            </div>
+        </div>
 <!--        <div class="chat-msg">-->
 <!--            <div class="chat-msg-profile">-->
 <!--                <img class="chat-msg-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png" alt="" />-->
@@ -167,125 +183,125 @@
 <?= $this->Html->css('formEditMsg'); ?>
 <script>
     $(document).ready(function (){
-        
-		var conn = new WebSocket('ws://localhost:8080?user_id=<?= $this->request->getAttribute('identity')->id; ?>');
+
+		var conn = new WebSocket('wss://localhost:8090?user_id=<?= $this->request->getAttribute('identity')->id; ?>');
         var user_id = <?= $this->request->getAttribute('identity')->id; ?>;
         var resource_id;
 		conn.onopen = function(e) {
             console.log("Connection established!");
-        
+
 		};
-        conn.onmessage = function(e) {
-            // console.log(e.data);
-            var data = JSON.parse(e.data);
-            if(data.socket == 'open'){
-                console.log(data);
-                // insert data table status
-                $.ajax({
-                
-                    type: "POST",
-                    headers:{
-                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
-                    },
-                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'add']); ?>",
+        //conn.onmessage = function(e) {
+        //    // console.log(e.data);
+        //    var data = JSON.parse(e.data);
+        //    if(data.socket == 'open'){
+        //        console.log(data);
+        //        // insert data table status
+        //        $.ajax({
+        //
+        //            type: "POST",
+        //            headers:{
+        //                'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+        //            },
+        //            url: "<?//= $this->Url->build(['controller' => 'Status', 'action' => 'add']); ?>//",
+        //
+        //            data: data,
+        //            success: function (response) {
+        //                response = JSON.parse(response);
+        //                resource_id = response.resource_id;
+        //                console.log(resource_id);
+        //
+        //            }
+        //
+        //        });
+        //
+        //    }else if(data.socket == 'close'){
+        //        console.log(data);
+        //        // insert data table status
+        //        $.ajax({
+        //
+        //            type: "POST",
+        //            headers:{
+        //                'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+        //            },
+        //            url: "<?//= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>//",
+        //
+        //            data: data,
+        //            success: function (response) {
+        //                console.log("Close status sockets :" + response);
+        //            }
+        //
+        //        });
+        //
+        //    }else if(data.socket == 'send'){
+        //        console.log(data);
+        //        // insert data table status
+        //
+        //
+        //    }else{
+        //        console.log("not method socket");
+        //    }
+        //};
+        //
+        //window.addEventListener('beforeunload', function (e) {
+        //    e.preventDefault();
+        //    console.log("close socket");
+        //
+        //    $.ajax({
+        //            type: "POST",
+        //            headers:{
+        //                'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+        //            },
+        //            url: "<?//= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>//",
+        //            data: {
+        //                'user_id': user_id,
+        //                'resource_id': resource_id,
+        //            },
+        //            success: function (response) {
+        //                console.log("Close status sockets :" + response);
+        //            }
+        //    });
+        //
+        //});
+        //
+        //conn.onclose = function(event)
+		//{
+		//	console.log('connection close');
+        //    $.ajax({
+        //            type: "POST",
+        //            headers:{
+        //                'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+        //            },
+        //            url: "<?//= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>//",
+        //            data: {
+        //                'user_id': user_id,
+        //                'resource_id': resource_id,
+        //            },
+        //            success: function (response) {
+        //                console.log("Close status sockets :" + response);
+        //            }
+        //    });
+		//};
 
-                    data: data,
-                    success: function (response) {
-                        response = JSON.parse(response);
-                        resource_id = response.resource_id;
-                        console.log(resource_id);
-
-                    }
-
-                });
-
-            }else if(data.socket == 'close'){
-                console.log(data);
-                // insert data table status
-                $.ajax({
-                
-                    type: "POST",
-                    headers:{
-                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
-                    },
-                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
-
-                    data: data,
-                    success: function (response) {
-                        console.log("Close status sockets :" + response);
-                    }
-
-                });
-
-            }else if(data.socket == 'send'){
-                console.log(data);
-                // insert data table status
 
 
-            }else{
-                console.log("not method socket");
-            }
-        };
-
-        window.addEventListener('beforeunload', function (e) {
-            e.preventDefault();
-            console.log("close socket");
-            
-            $.ajax({             
-                    type: "POST",
-                    headers:{
-                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
-                    },
-                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
-                    data: {
-                        'user_id': user_id,
-                        'resource_id': resource_id,  
-                    },
-                    success: function (response) {
-                        console.log("Close status sockets :" + response);
-                    }      
-            });
-
-        });
-
-        conn.onclose = function(event)
-		{
-			console.log('connection close');
-            $.ajax({             
-                    type: "POST",
-                    headers:{
-                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
-                    },
-                    url: "<?= $this->Url->build(['controller' => 'Status', 'action' => 'delete']); ?>",
-                    data: {
-                        'user_id': user_id,
-                        'resource_id': resource_id,  
-                    },
-                    success: function (response) {
-                        console.log("Close status sockets :" + response);
-                    }      
-            });
-		};
-
-
-
-        $('button.add').click(function (e) { 
-            e.preventDefault();
-            var message = $('#txtSend').val();
-            var user_id = <?= $this->request->getAttribute('identity')->id; ?>;
-            var data = {
-                'message' : message,
-                'user_id' : user_id
-            };
-            conn.send(JSON.stringify(data));
-            $('#txtSend').val('');
-        });
-
-        
-        conn.onclose = function(event)
-		{
-			console.log('connection close');
-		};
+        //$('button.add').click(function (e) {
+        //    e.preventDefault();
+        //    var message = $('#txtSend').val();
+        //    var user_id = <?//= $this->request->getAttribute('identity')->id; ?>//;
+        //    var data = {
+        //        'message' : message,
+        //        'user_id' : user_id
+        //    };
+        //    conn.send(JSON.stringify(data));
+        //    $('#txtSend').val('');
+        //});
+        //
+        //
+        //conn.onclose = function(event)
+		//{
+		//	console.log('connection close');
+		//};
 
 
 
@@ -300,7 +316,7 @@
                 // check empty
                 if(searchKey.length > 0){
                 console.log("send message by enter",<?=$user_from ?>, <?= $to->id ?> ,searchKey);
-                sendMessage1( <?=$user_from ?>, <?= $to->id ?> ,searchKey);
+                sendMessage( <?=$user_from ?>, <?= $to->id ?> ,searchKey);
                 }
             }
         });
@@ -308,7 +324,7 @@
         $('.chat-area-footer>svg.feather-send').click(function (){
             var searchKey = $('#txtSend').val();
             if(searchKey.length > 0){
-                sendMessage1( <?=$user_from ?>, <?= $to->id ?>, searchKey);
+                sendMessage( <?=$user_from ?>, <?= $to->id ?>, searchKey);
             }
         });
 
@@ -319,7 +335,7 @@
 					user_id_to:userTo,
 					message: message,
 				};
-                conn.send(JSON.stringify(data));
+                // conn.send(JSON.stringify(data));
         }
 
         function sendMessage(userFrom, userTo, message){
@@ -329,7 +345,7 @@
 					receiver_userid:userTo,
 				};
 
-			conn.send(JSON.stringify(data));
+			// conn.send(JSON.stringify(data));
             $.ajax({
                 method:'post',
                 headers:{
@@ -427,15 +443,17 @@
             // let formedit = '<input type="text" value="'+$(this).parent().parent().find('.chat-msg-text').text()+'">';
 
             var msgEdit = $(this).parent().parent();
-            console.log(msgEdit);
+            // console.log(msgEdit);
             var msgEditId = msgEdit.data('id');
             console.log("id message edit ", msgEditId);
-            var textContent = msgEdit.find('.chat-msg-text');
-            var textContentValue = textContent.text();
+            var areaContent = msgEdit.find('.chat-msg-content');
+            var areaText = msgEdit.find('.chat-msg-text');
+            var valueText = areaText.text();
+            var chidContent = areaContent.find('*');
 
             let formedit =
             '<div class="post-revision-edit-content edit-post-content js-post-revision-edit-content">'
-            +    '<textarea placeholder="Write a post..." autocomplete="off">'+ textContentValue + '</textarea>'
+            +    '<textarea placeholder="Write a post..." autocomplete="off">'+ valueText + '</textarea>'
             +    '<a class="file-upload-link js-file-upload-link" href="#">'
             +        '<i class="icon-paper-clip js-file-upload-icon" original-title="attach notes, past exams, or other materials"></i>'
             +    '</a>'
@@ -454,38 +472,64 @@
             +    '</div>'
             +    '<input class="js-upload-file-input" type="file" name="file" multiple="">';
 
-            textContent.replaceWith(formedit);
+            areaContent.html(formedit);
 
             $('.chat-msg-setting').each(function (){
-                $(this).hide();
+                $(this).off('mouseover');
             });
 
 
             // cancel edit message
             $("a#cancel-edit-msg").on("click",function(){
-                console.log("cancel edit message", msgEditId, textContentValue);
-                textContent.text(textContentValue);
-                $('.chat-msg-setting').each(function (){
-                    $(this).show();
-                });
+                console.log("cancel edit message", msgEditId, valueText);
+                areaContent.html(chidContent);
+                // $('.chat-msg-setting').each(function (){
+                //     $(this).on('mouseleave');
+                // });
             });
 
-        });
+            // save message
+            $('a#save-edit-msg').click(function (){
+                // edit editMessage
+                var id = msgEditId;
+                var msgEdit = $(this).parent().parent();
+                newmsg = msgEdit.find('textarea').val();
+                console.log("new message: ", newmsg);
+                $.ajax({
+                    method: 'post',
+                    headers:{
+                        'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                    },
+                    url : "<?php echo $this->Url->build([
+                        'controller' => 'Chats' , 'action' => 'editMessage'
+                    ]); ?>",
+                    data: {
+                        id: id,
+                        message: newmsg
+                    },
+                    success: function (response){
+                        response = JSON.parse(response);
+                        console.log('success edit message');
+                        areaText.text(newmsg);
+                        areaContent.html(chidContent);
+                        timeEdit = response.modified;
+
+                        // format time
+                        var date = new Date(timeEdit);
+                        // console.log("time edit: ", date.toLocaleString());
+                        areaContent.parent().find('.chat-msg-date').text(date.toLocaleString());
+                    },
+                    fail : function(){
+                        console.log('fail edit message');
+                    }
+                });
 
 
-        // save message
-        $('.chat-msg-setting>svg.feather-save').click(function (){
-            var msgId = $(this).attr('msg-id');
-            var msgText = $(this).parent().parent().find('.chat-msg-text').val();
-            var msg = $('#msg-'+msgId);
-            var msgText = msg.find('.chat-msg-text');
-            var msgEdit = $('#msg-edit-'+msgId);
-            var msgEditText = msgEdit.find('.chat-msg-text');
-            msgEdit.hide();
-            msg.show();
-            msgText.text(msgEditText.val());
-            msgEditText.val('');
+            });
+
+
         });
+
 
         function editMessage(id, message){
             $.ajax({
@@ -549,6 +593,58 @@
                 }
             });
         };
+
+
+
+    });
+
+
+    $('.chat-area-footer>svg.feather-image').click(function (){
+        console.log('click image');
+        // choose file to upload
+        var input = document.createElement('input');
+        input.type = 'file';
+
+        input.onchange = e => {
+        // getting a hold of the file reference
+        var file = e.target.files[0];
+
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsDataURL(file); // this is reading as data url
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content = readerEvent.target.result; // this is the content!
+            console.log(content);
+           $('#img-test').attr('src', content);
+
+            // send image and upload file
+            $.ajax({
+                method: 'post',
+                headers:{
+                    'X-CSRF-Token': $('meta[name="csrfToken"]').attr('content')
+                },
+                url : "<?php echo $this->Url->build([
+                    'controller' => 'Chats' , 'action' => 'sendImage'
+                ]); ?>",
+                data: {
+                    user_id_from: <?=$user_from ?>,
+                    user_id_to:<?= $to->id ?>,
+                    image_file: content
+                },
+                success: function (response){
+                    console.log('success upload file');
+                    console.log(response);
+                },
+                fail : function(){
+                    console.log('fail upload file');
+                }
+            });
+        }
+        }
+        input.click();
+        // show image choosed in chat area
 
 
 

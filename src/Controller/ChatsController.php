@@ -40,7 +40,7 @@ class ChatsController extends AppController
         parse_str($querystring, $queryarray);
         if(isset($queryarray['user_id'])) {
             $user_id = $queryarray['user_id'];
-            
+
             echo "New connection! ({$conn->resourceId})\n";
 
             $data = array(
@@ -48,7 +48,7 @@ class ChatsController extends AppController
                 'resource_id' => $conn->resourceId,
                 'socket' => 'open'
             );
-            
+
             $conn->send(json_encode($data));
 
         }else{
@@ -100,14 +100,14 @@ class ChatsController extends AppController
         $users = $this->Users->find();
         $this->set(compact(['users']));
 
-        
+
         $chats = $this->Chats->find('all',[
             'contain' =>[
                 'UserFrom',
                 'UserTo'
             ]
             ]);
-        
+
 
         $this->viewBuilder()->setLayout('chat1');
 
@@ -257,12 +257,15 @@ class ChatsController extends AppController
 
         if ($this->request->is(['ajax'])) {
             $para = $this->request->getData();
-            $chat = $this->Chats->get($para->id);
-            $chat->message = $para->message;
+
+            $chat = $this->Chats->get($para['id']);
+            $chat->message = $para['message'];
             if ($this->Chats->save($chat)) {
+                exit(json_encode($chat));
                 $this->Flash->success(__('The chat has been saved.'));
 
             }else{
+                exit('error');
                 $this->Flash->error(__('The chat could not be saved. Please, try again.'));
             }
         }
@@ -303,7 +306,7 @@ class ChatsController extends AppController
         $this->set(compact('stamps'));
     }
 
-    public function sendImage(){
+    public function sendStamps(){
         $this->request->allowMethod(['ajax', 'post']);
         $chat = $this->Chats->newEmptyEntity();
         if ($this->request->is('ajax')) {
@@ -316,5 +319,29 @@ class ChatsController extends AppController
             }
         }
     }
+
+    public function sendImage(){
+        $this->request->allowMethod(['ajax', 'post']);
+        $chat = $this->Chats->newEmptyEntity();
+        if ($this->request->is('ajax')) {
+            $chat = $this->Chats->patchEntity($chat, $this->request->getData());
+            if(!$chat->getErrors ){
+                $image = $this->request->getData('image_file');
+                debug($image);
+                echo json_encode($image);
+                exit();
+                $name_img = "test.jpe";
+                $targetPath = WWW_ROOT.'img'.DS.$name_img;
+//                if($name_img)
+                $image->moveTo($targetPath);
+                $chat->image_file_name = $name_img;
+            }
+            if ($this->Chats->save($chat)) {
+                $this->set('newMsg',$chat);
+            }
+        }
+    }
+
+
 
 }
