@@ -24,7 +24,7 @@
         </div>
         <div class="search-bar">
 <!--            <input type="text" placeholder="Search..." />-->
-            <?= $this->Form->input('search',['id'=> 'search']); ?>
+            <?= $this->Form->input('search',['id'=> 'search','placeholder'=>"Search user ..."]); ?>
         </div>
         <div class="user-settings">
             <div class=""><?= $this->Identity->get('name'); ?>     </div>

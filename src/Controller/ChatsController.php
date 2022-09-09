@@ -276,15 +276,32 @@ class ChatsController extends AppController
     {
         $this->request->allowMethod(['ajax', 'delete', 'post', 'get']);
         if ($this->request->is(['ajax'])) {
-//            debug($this->request->getQuery('message_id'));
-//            exit;
+            //debug($this->request->getQuery('message_id'));
+
             $id = $this->request->getQuery('message_id');
+            $urlImg = $this->request->getQuery('url_img');
+            $urlImg = substr($urlImg, 8);
+
+            // debug($urlImg);
+            // debug(WWW_ROOT);
+            // exit;
+            // check urlImg is null or not
+            if($urlImg != null){
+                // check urlImg is in folder '/img/chat' or not
+                if(strpos($urlImg, '/img/chat') !== false){
+                    // check file is exist or not and delete it
+                    if(file_exists(WWW_ROOT.$urlImg)){
+                        unlink(WWW_ROOT.$urlImg);
+                    }
+                }
+            }
+
             $chat = $this->Chats->get($id);
             if(!$id){
                 echo "not ".$id,' is vaild';
             }else
             if ($this->Chats->delete($chat)) {
-                $this->Flash->success(__('The chat has been deleted.'));
+                //$this->Flash->success(__('The chat has been deleted.'));
                 echo "1";
 
             } else {
@@ -327,18 +344,28 @@ class ChatsController extends AppController
             $chat = $this->Chats->patchEntity($chat, $this->request->getData());
             if(!$chat->getErrors ){
                 $image = $this->request->getData('image_file');
-                debug($image);
-                echo json_encode($image);
-                exit();
-                $name_img = "test.jpe";
-                $targetPath = WWW_ROOT.'img'.DS.$name_img;
-//                if($name_img)
-                $image->moveTo($targetPath);
-                $chat->image_file_name = $name_img;
+
+                $name_img = $image->getClientFilename();
+                //debug($name_img);
+                $file_extension = '.' .explode('.',$name_img)[1];
+                $new_name_img =  time() .  $file_extension;
+                //debug($new_name_img);
+                //exit($file_extension);
+
+                $path = WWW_ROOT.'img'.DS.'chat';
+                if(!is_dir($path))
+                    mkdir($path,0775);
+                $targetPath = $path.DS.$new_name_img;
+
+                if($new_name_img)
+                    $image->moveTo($targetPath);
+                $chat->image_file_name = 'chat'.DS.$new_name_img;
             }
             if ($this->Chats->save($chat)) {
+                exit($chat);
                 $this->set('newMsg',$chat);
             }
+            exit("error");
         }
     }
 
