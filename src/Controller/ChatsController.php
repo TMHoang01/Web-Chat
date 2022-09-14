@@ -32,29 +32,32 @@ class ChatsController extends AppController
         $this->Authentication->allowUnauthenticated(['index']);
     }
     public function onOpen(ConnectionInterface $conn) {
-        // Store the new connection to send messages to later
-        $this->clients->attach($conn);
         // get user id from connection
         $querystring = $conn->httpRequest->getUri()->getQuery();
 
         parse_str($querystring, $queryarray);
-        if(isset($queryarray['user_id'])) {
-            $user_id = $queryarray['user_id'];
-
+        if(isset($queryarray['to'] ) && isset($queryarray['from'])) {
+            $toId = $queryarray['to'];
+            $fromId = $queryarray['from'];
+            $edge = array(
+                'from' => $fromId,
+                'to' => $toId
+            );
+            
             echo "New connection! ({$conn->resourceId})\n";
 
-            $data = array(
-                'user_id' => $user_id,
-                'resource_id' => $conn->resourceId,
-                'socket' => 'open'
-            );
-
-            $conn->send(json_encode($data));
-
+            // Store the new connection to send messages to later
+            $this->clients->attach($conn, $edge);
         }else{
             echo "No user_id in querystring in new connection! ({$conn->resourceId})\n";
         }
-
+        // connection current with user id
+        foreach ($this->clients as $client) {
+            $clientTo = $this->clients[$client]['to'];
+            $clientFrom = $this->clients[$client]['from'];
+            echo "   Connect resourceId : {$client->resourceId} === "."{User from: ".$clientFrom." - User to: ".$clientTo."}\n";
+        }
+        echo "\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -62,15 +65,25 @@ class ChatsController extends AppController
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
         $data = json_decode($msg);
-
-        $statusController = new StatusController();
-        echo json_encode($statusController->view());
-
+        $userTo = $data->user_id_to;
+        $userFrom = $data->user_id_from;
+        // add action in msg
+        // $data->action = 'sendMessage';
+        $msg = json_encode($data);
 
         foreach ($this->clients as $client) {
             if ($from !== $client) {
+                $clientTo = $this->clients[$client]['to'];
+                $clientFrom = $this->clients[$client]['from'];
                 // The sender is not the receiver, send to each client connected
-                $client->send($msg);
+                if(  ($userTo == $clientFrom && $userFrom == $clientTo) 
+                  || ($userTo == $clientTo && $userFrom == $clientFrom)){
+                    $client->send($msg);
+                    // echo "send to client\n";
+                }else{
+                    // echo "   Not send \n";
+                }
+
             }
         }
     }
@@ -235,20 +248,13 @@ class ChatsController extends AppController
 
     public function sendMessage(){
         $this->request->allowMethod('ajax');
-
-
         $chat = $this->Chats->newEmptyEntity();
         if ($this->request->is('ajax')) {
             $chat = $this->Chats->patchEntity($chat, $this->request->getData());
-
             if ($this->Chats->save($chat)) {
-//                $this->Flash->success(__('The chat has been saved.'));
-
-                $this->set('newMsg',$chat);
-                return;
+                exit(json_encode($chat));
             }
-            $this->Flash->error(__('The chat could not be saved. Please, try again.'));
-
+            exit();
         }
     }
 
@@ -262,8 +268,6 @@ class ChatsController extends AppController
             $chat->message = $para['message'];
             if ($this->Chats->save($chat)) {
                 exit(json_encode($chat));
-                $this->Flash->success(__('The chat has been saved.'));
-
             }else{
                 exit('error');
                 $this->Flash->error(__('The chat could not be saved. Please, try again.'));
@@ -280,12 +284,10 @@ class ChatsController extends AppController
 
             $id = $this->request->getQuery('message_id');
             $urlImg = $this->request->getQuery('url_img');
-            $urlImg = substr($urlImg, 8);
+            if($urlImg != null){
+                $urlImg = substr($urlImg, 8);
+            }
 
-            // debug($urlImg);
-            // debug(WWW_ROOT);
-            // exit;
-            // check urlImg is null or not
             if($urlImg != null){
                 // check urlImg is in folder '/img/chat' or not
                 if(strpos($urlImg, '/img/chat') !== false){
@@ -312,9 +314,7 @@ class ChatsController extends AppController
         }else{
             echo 'not method ajax';
         }
-        exit();
 
-//        return $this->redirect(['action' => 'index']);
     }
 
     public function loadStamps(){
@@ -332,6 +332,7 @@ class ChatsController extends AppController
             // debug($chat->image_file_name);
             // exit();
             if ($this->Chats->save($chat)) {
+                exit(json_encode($chat));
                 $this->set('newMsg',$chat);
             }
         }
@@ -353,16 +354,18 @@ class ChatsController extends AppController
                 //exit($file_extension);
 
                 $path = WWW_ROOT.'img'.DS.'chat';
+                // debug($path);
                 if(!is_dir($path))
                     mkdir($path,0775);
                 $targetPath = $path.DS.$new_name_img;
-
+                
                 if($new_name_img)
                     $image->moveTo($targetPath);
-                $chat->image_file_name = 'chat'.DS.$new_name_img;
+                $chat->image_file_name = '/img/chat/'.$new_name_img;
+                
             }
             if ($this->Chats->save($chat)) {
-                exit($chat);
+                exit(json_encode($chat));
                 $this->set('newMsg',$chat);
             }
             exit("error");
